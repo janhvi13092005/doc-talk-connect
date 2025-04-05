@@ -1,9 +1,12 @@
+
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/lib/auth';
+import { Loader2 } from 'lucide-react';
 
 interface AuthModalProps {
   initialTab: 'login' | 'signup';
@@ -14,21 +17,36 @@ const AuthModal = ({ initialTab }: AuthModalProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const { signIn, signUp } = useAuth();
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real application, this would call an authentication API
-    toast.success("Login Successful", {
-      description: "Welcome back to DocTalk!"
-    });
+    setIsLoading(true);
+    try {
+      await signIn(email, password);
+    } catch (error) {
+      console.error('Login error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real application, this would call a registration API
-    toast.success("Account Created", {
-      description: "Welcome to DocTalk! Your account has been created successfully."
-    });
+    if (!name) {
+      toast.error("Please enter your name");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await signUp(email, password, name);
+    } catch (error) {
+      console.error('Signup error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -50,6 +68,7 @@ const AuthModal = ({ initialTab }: AuthModalProps) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -66,9 +85,19 @@ const AuthModal = ({ initialTab }: AuthModalProps) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
-            <Button type="submit" className="w-full">Login</Button>
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </>
+              ) : (
+                "Login"
+              )}
+            </Button>
           </div>
         </form>
         <div className="mt-4 text-center text-sm">
@@ -90,6 +119,7 @@ const AuthModal = ({ initialTab }: AuthModalProps) => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -101,6 +131,7 @@ const AuthModal = ({ initialTab }: AuthModalProps) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -112,6 +143,7 @@ const AuthModal = ({ initialTab }: AuthModalProps) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={isLoading}
               />
               <p className="text-xs text-gray-500">
                 Password must be at least 8 characters long and include a number and special character.
@@ -124,13 +156,23 @@ const AuthModal = ({ initialTab }: AuthModalProps) => {
                   id="terms" 
                   className="border-gray-300 rounded text-primary focus:ring-primary" 
                   required
+                  disabled={isLoading}
                 />
                 <Label htmlFor="terms" className="text-sm font-normal">
                   I agree to the <a href="#" className="text-primary hover:underline">Terms of Service</a> and <a href="#" className="text-primary hover:underline">Privacy Policy</a>
                 </Label>
               </div>
             </div>
-            <Button type="submit" className="w-full">Create Account</Button>
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating account...
+                </>
+              ) : (
+                "Create Account"
+              )}
+            </Button>
           </div>
         </form>
         <div className="mt-4 text-center text-sm">
