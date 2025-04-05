@@ -89,14 +89,24 @@ export const getUserAppointments = async (): Promise<Appointment[]> => {
     ...appointment,
     doctor_name: appointment.doctors?.name,
     doctor_specialty: appointment.doctors?.specialty,
+    // Ensure status is one of the expected values for TypeScript
+    status: appointment.status as "pending" | "confirmed" | "completed" | "cancelled"
   }));
 };
 
 export const createAppointment = async (appointment: Omit<Appointment, "id" | "user_id" | "created_at" | "updated_at">): Promise<Appointment> => {
+  // Get the current user's ID
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
   const { data, error } = await supabase
     .from("appointments")
     .insert({
       ...appointment,
+      user_id: user.id
     })
     .select()
     .single();
@@ -106,7 +116,11 @@ export const createAppointment = async (appointment: Omit<Appointment, "id" | "u
     throw error;
   }
 
-  return data;
+  return {
+    ...data,
+    status: data.status as "pending" | "confirmed" | "completed" | "cancelled",
+    type: data.type as "video" | "voice" | "chat" | "in-person"
+  };
 };
 
 export const updateAppointment = async (id: string, updates: Partial<Appointment>): Promise<Appointment> => {
@@ -122,7 +136,11 @@ export const updateAppointment = async (id: string, updates: Partial<Appointment
     throw error;
   }
 
-  return data;
+  return {
+    ...data,
+    status: data.status as "pending" | "confirmed" | "completed" | "cancelled",
+    type: data.type as "video" | "voice" | "chat" | "in-person"
+  };
 };
 
 export const cancelAppointment = async (id: string): Promise<void> => {
