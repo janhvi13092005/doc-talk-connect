@@ -95,7 +95,7 @@ export const getUserAppointments = async (): Promise<Appointment[]> => {
   }));
 };
 
-export const createAppointment = async (appointment: Omit<Appointment, "id" | "user_id" | "created_at" | "updated_at">): Promise<Appointment> => {
+export const createAppointment = async (appointmentData: Omit<Appointment, "id" | "user_id" | "created_at" | "updated_at">): Promise<Appointment> => {
   // Get the current user's ID
   const { data: { user } } = await supabase.auth.getUser();
   
@@ -106,8 +106,12 @@ export const createAppointment = async (appointment: Omit<Appointment, "id" | "u
   const { data, error } = await supabase
     .from("appointments")
     .insert({
-      ...appointment,
-      user_id: user.id
+      ...appointmentData,
+      user_id: user.id,
+      // Make sure status is a valid type for the database
+      status: appointmentData.status,
+      // Make sure type is a valid type for the database
+      type: appointmentData.type
     })
     .select()
     .single();
