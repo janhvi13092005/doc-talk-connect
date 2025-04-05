@@ -84,13 +84,14 @@ export const getUserAppointments = async (): Promise<Appointment[]> => {
     throw error;
   }
 
-  // Transform the data to match our Appointment interface
+  // Transform the data to match our Appointment interface with proper typing
   return (appointments || []).map((appointment) => ({
     ...appointment,
     doctor_name: appointment.doctors?.name,
     doctor_specialty: appointment.doctors?.specialty,
-    // Ensure status is one of the expected values for TypeScript
-    status: appointment.status as "pending" | "confirmed" | "completed" | "cancelled"
+    // Ensure status and type are properly typed for TypeScript
+    status: appointment.status as "pending" | "confirmed" | "completed" | "cancelled",
+    type: appointment.type as "video" | "voice" | "chat" | "in-person"
   }));
 };
 
