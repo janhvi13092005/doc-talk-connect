@@ -11,13 +11,24 @@ import Doctors from "./pages/Doctors";
 import DoctorDetail from "./pages/DoctorDetail";
 import Appointments from "./pages/Appointments";
 import Profile from "./pages/Profile";
+import "./App.css";
+
+// Add Google Fonts
+const addGoogleFonts = () => {
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap';
+  document.head.appendChild(link);
+};
+
+addGoogleFonts();
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster richColors />
+      <Toaster richColors position="top-center" />
       <AuthProvider>
         <BrowserRouter>
           <Routes>
