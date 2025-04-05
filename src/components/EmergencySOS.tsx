@@ -1,20 +1,16 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Bell } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 const EmergencySOS = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { toast } = useToast();
 
   const handleEmergency = () => {
     // In a real application, this would trigger an API call to alert emergency services
-    toast({
-      title: "Emergency Alert Sent",
-      description: "Medical assistance has been notified. Stay calm and wait for a response.",
-      variant: "destructive",
+    toast.error("Emergency Alert Sent", {
+      description: "Medical assistance has been notified. Stay calm and wait for a response."
     });
     setIsDialogOpen(false);
   };

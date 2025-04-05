@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 interface AuthModalProps {
   initialTab: 'login' | 'signup';
@@ -14,23 +14,20 @@ const AuthModal = ({ initialTab }: AuthModalProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const { toast } = useToast();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real application, this would call an authentication API
-    toast({
-      title: "Login Successful",
-      description: "Welcome back to DocTalk!",
+    toast.success("Login Successful", {
+      description: "Welcome back to DocTalk!"
     });
   };
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real application, this would call a registration API
-    toast({
-      title: "Account Created",
-      description: "Welcome to DocTalk! Your account has been created successfully.",
+    toast.success("Account Created", {
+      description: "Welcome to DocTalk! Your account has been created successfully."
     });
   };
 

@@ -27,9 +27,20 @@ export const toast = {
 // For compatibility with components using the useToast hook
 export const useToast = () => {
   return {
-    toast,
+    toast: {
+      ...toast,
+      // Add a call method to make toast() work directly
+      __call: (options: any) => toast.default(options)
+    },
     // Empty array to maintain API compatibility
     toasts: [],
     dismiss: () => sonnerToast.dismiss()
   };
 };
+
+// Add call signature to make toast callable
+Object.defineProperty(toast, Symbol.for('call'), {
+  value: (options: any) => toast.default(options),
+  configurable: true
+});
+

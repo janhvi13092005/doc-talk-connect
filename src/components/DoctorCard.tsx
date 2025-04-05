@@ -1,9 +1,8 @@
-
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 import { Calendar } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 interface DoctorCardProps {
   name: string;
@@ -14,13 +13,10 @@ interface DoctorCardProps {
 }
 
 const DoctorCard = ({ name, specialty, image, rating, experience }: DoctorCardProps) => {
-  const { toast } = useToast();
-
   const handleBookAppointment = () => {
     // In a real application, this would open an appointment booking flow
-    toast({
-      title: "Appointment Request Sent",
-      description: `Your appointment request with Dr. ${name} has been submitted.`,
+    toast.success("Appointment Request Sent", {
+      description: `Your appointment request with Dr. ${name} has been submitted.`
     });
   };
 
